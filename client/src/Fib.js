@@ -3,7 +3,7 @@ import axios from "axios";
 
 const Fib = () => {
   const [seenIndexes, setSeenIndexes] = useState([]);
-  const [values, setValues] = useState({});
+  const [calculatedValues, setCalculatedValues] = useState({});
   const [index, setIndex] = useState("");
 
   useEffect(() => {
@@ -12,25 +12,39 @@ const Fib = () => {
   }, []);
 
   const fetchValues = async () => {
-    const values = await axios.get("/api/values/current");
+    const { data } = await axios.get("/api/values/current");
 
-    setValues(values);
+    setCalculatedValues(data);
   };
 
   const fetchIndexes = async () => {
-    const values = await axios.get("/api/values/all");
+    const { data } = await axios.get("/api/values/all");
+    setSeenIndexes(data);
+  };
 
-    setSeenIndexes(values);
+  const renderValues = () => {
+    let entries = [];
+    for (let key in calculatedValues) {
+      entries.push(
+        <div key={key}>
+          For index {key} I calculated {calculatedValues[key]}
+        </div>
+      );
+    }
+
+    return entries;
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     await axios.post("/api/values", {
-      index
+      index: index
     });
 
     setIndex("");
+    fetchValues();
+    fetchIndexes();
   };
 
   return (
@@ -42,16 +56,11 @@ const Fib = () => {
       </form>
 
       <h3>Indexes I have seen</h3>
-      {seenIndexes.length > 0 &&
+      {seenIndexes &&
+        seenIndexes.length > 0 &&
         seenIndexes.map(({ number }) => number).join(", ")}
       <h3>Calculated values</h3>
-      {values &&
-        values.values &&
-        values.values.map((key, index) => (
-          <div key={index}>
-            For index {index} I calculated {key}
-          </div>
-        ))}
+      {renderValues()}
     </div>
   );
 };
