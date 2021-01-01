@@ -42,7 +42,8 @@ const Fib = () => {
       </form>
 
       <h3>Indexes I have seen</h3>
-      {seenIndexes.map(({ number }) => number).join(", ")}
+      {seenIndexes.length > 0 &&
+        seenIndexes.map(({ number }) => number).join(", ")}
       <h3>Calculated values</h3>
       {values &&
         values.values &&
