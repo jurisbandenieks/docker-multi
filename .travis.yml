@@ -22,3 +22,15 @@ after_success:
   - docker push jurisbandenieks/multi-nginx
   - docker push jurisbandenieks/multi-server
   - docker push jurisbandenieks/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-south-1"
+  app: "docker-react"
+  env: "Complex-env"
+  bucket_name: "elasticbeanstalk-eu-south-1-949370492564"
+  bucket_path: "complex"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
